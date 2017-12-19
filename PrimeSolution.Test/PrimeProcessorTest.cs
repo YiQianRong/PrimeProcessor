@@ -59,65 +59,66 @@ namespace PrimeSolution.Test
 
             // O( n * n * log(n) )
 
-            var primeList = PrimeProcessor.PrimeTriplets(1);
+            var processor = new PrimeProcessor();
+            var primeList = processor.PrimeTriplets(1);
             Assert.AreEqual(primeList[1].Prime, 1);
 
-            primeList = PrimeProcessor.PrimeTriplets(2);
+            primeList = processor.PrimeTriplets(2);
             Assert.AreEqual(primeList[1].Prime, 2);
             Assert.AreEqual(primeList[2].Prime, 3);
-            var sumPrimeTriplets = PrimeProcessor.SumOfPrimeTriplets(2);
+            var sumPrimeTriplets = processor.SumOfPrimeTriplets(2);
             Assert.AreEqual(sumPrimeTriplets, 5);
 
-            primeList = PrimeProcessor.PrimeTriplets(3);
+            primeList = processor.PrimeTriplets(3);
             Assert.AreEqual(primeList[1].Prime, 5);
-            sumPrimeTriplets = PrimeProcessor.SumOfPrimeTriplets(3);
+            sumPrimeTriplets = processor.SumOfPrimeTriplets(3);
             Assert.AreEqual(sumPrimeTriplets, 5);
 
-            primeList = PrimeProcessor.PrimeTriplets(4);
+            primeList = processor.PrimeTriplets(4);
             Assert.AreEqual(primeList[1].Prime, 7);
-            sumPrimeTriplets = PrimeProcessor.SumOfPrimeTriplets(4);
+            sumPrimeTriplets = processor.SumOfPrimeTriplets(4);
             Assert.AreEqual(sumPrimeTriplets, 7);
 
-            primeList = PrimeProcessor.PrimeTriplets(5);
+            primeList = processor.PrimeTriplets(5);
             Assert.AreEqual(primeList[1].Prime, 11);
             Assert.AreEqual(primeList[2].Prime, 13);
-            sumPrimeTriplets = PrimeProcessor.SumOfPrimeTriplets(5);
+            sumPrimeTriplets = processor.SumOfPrimeTriplets(5);
             Assert.AreEqual(sumPrimeTriplets, 24);
 
-            primeList = PrimeProcessor.PrimeTriplets(6);
+            primeList = processor.PrimeTriplets(6);
             Assert.AreEqual(primeList[1].Prime, 17);
             Assert.AreEqual(primeList[2].Prime, 19);
-            sumPrimeTriplets = PrimeProcessor.SumOfPrimeTriplets(6);
+            sumPrimeTriplets = processor.SumOfPrimeTriplets(6);
             Assert.AreEqual(sumPrimeTriplets, 36);
 
-            primeList = PrimeProcessor.PrimeTriplets(7);
+            primeList = processor.PrimeTriplets(7);
             Assert.AreEqual(primeList[1].Prime, 23);
-            sumPrimeTriplets = PrimeProcessor.SumOfPrimeTriplets(7);
+            sumPrimeTriplets = processor.SumOfPrimeTriplets(7);
             Assert.AreEqual(sumPrimeTriplets, 23);
 
-            primeList = PrimeProcessor.PrimeTriplets(8);
+            primeList = processor.PrimeTriplets(8);
             Assert.AreEqual(primeList[1].Prime, 29);
             Assert.AreEqual(primeList[2].Prime, 31);
-            sumPrimeTriplets = PrimeProcessor.SumOfPrimeTriplets(8);
+            sumPrimeTriplets = processor.SumOfPrimeTriplets(8);
             Assert.AreEqual(sumPrimeTriplets, 60);
 
-            primeList = PrimeProcessor.PrimeTriplets(9);
+            primeList = processor.PrimeTriplets(9);
             Assert.AreEqual(primeList[1].Prime, 37);
             Assert.AreEqual(primeList[2].Prime, 41);
             Assert.AreEqual(primeList[3].Prime, 43);
-            sumPrimeTriplets = PrimeProcessor.SumOfPrimeTriplets(9);
+            sumPrimeTriplets = processor.SumOfPrimeTriplets(9);
             Assert.AreEqual(sumPrimeTriplets, 37);
 
-            primeList = PrimeProcessor.PrimeTriplets(10);
+            primeList = processor.PrimeTriplets(10);
             Assert.AreEqual(primeList[1].Prime, 47);
             Assert.AreEqual(primeList[2].Prime, 53);
-            sumPrimeTriplets = PrimeProcessor.SumOfPrimeTriplets(10);
+            sumPrimeTriplets = processor.SumOfPrimeTriplets(10);
             Assert.AreEqual(sumPrimeTriplets, 47);
 
-            primeList = PrimeProcessor.PrimeTriplets(11);
+            primeList = processor.PrimeTriplets(11);
             Assert.AreEqual(primeList[1].Prime, 59);
             Assert.AreEqual(primeList[2].Prime, 61);
-            sumPrimeTriplets = PrimeProcessor.SumOfPrimeTriplets(11);
+            sumPrimeTriplets = processor.SumOfPrimeTriplets(11);
             Assert.AreEqual(sumPrimeTriplets, 120);
         }
 
@@ -130,9 +131,9 @@ namespace PrimeSolution.Test
             //How many circular primes are there below one million?
 
             //O(n * Log(n))
-
+            var processor = new PrimeProcessor();
             long primeProduct = 100000; //9311
-            var primeList = PrimeProcessor.CircularPrimes(primeProduct);
+            var primeList = processor.CircularPrimes(primeProduct);
             long result = primeList.OrderByDescending(p => p).ToList().FirstOrDefault();
 
             Assert.AreEqual(result, 9311);
@@ -146,9 +147,9 @@ namespace PrimeSolution.Test
             //Find the sum of all the primes below two million.
 
             //O(n * Log(n))
-
+            var processor = new PrimeProcessor();
             long primeProduct = 2000; //277050
-            long result = PrimeProcessor.TheSumOfPrimesTest(primeProduct);
+            long result = processor.TheSumOfPrimesTest(primeProduct);
             Assert.AreEqual(result, 277050);
         }
 
@@ -159,10 +160,10 @@ namespace PrimeSolution.Test
             //By listing the first six prime numbers: 2, 3, 5, 7, 11, and 13, we can see that the 6th prime is 13.
             //What is the 10 001st prime number ?
 
-            //It is a P problem
-
+            //This algorithm is a NP problem, value of prime grows exponentially. But prime list is a P problem, most of non-prime values could be skiped.
+            var processor = new PrimeProcessor();
             long nth_prime = 10001; //104743
-            var largestPrimeFactors = PrimeProcessor.The_nth_Prime(nth_prime);
+            var largestPrimeFactors = processor.The_nth_Prime(nth_prime);
             var result = largestPrimeFactors[largestPrimeFactors.Count-1];
 
             Assert.AreEqual(result, 104743);
@@ -176,10 +177,10 @@ namespace PrimeSolution.Test
             //What is the largest prime factor of the number 600851475143 ?
 
             //O(n * Log(n))
-
+            var processor = new PrimeProcessor();
             //long printProduct = 13195; //5, 7, 13, 29
             long primeProduct = 600851475143; //71, 839, 1471, 6857
-            var largestPrimeFactors = PrimeProcessor.LargestPrimeFactor(primeProduct);
+            var largestPrimeFactors = processor.LargestPrimeFactor(primeProduct);
 
             long result = 1;
             foreach (long prime in largestPrimeFactors)
