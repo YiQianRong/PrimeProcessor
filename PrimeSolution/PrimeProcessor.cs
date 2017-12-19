@@ -113,7 +113,7 @@ namespace PrimeSolution
             return circularPrimeList.OrderBy(p => p).ToList();
         }
 
-        public static List<long> All_Rotations(string strNumber)
+        protected static List<long> All_Rotations(string strNumber)
         {
             List<long> numbers = new List<long>();
             numbers.Add(long.Parse(strNumber));
@@ -215,7 +215,7 @@ namespace PrimeSolution
             return primes;
         }
 
-        //It is NP problem
+        //NP problem
         public static List<long> The_nth_Prime(long n)
         {
             List<long> primes = new List<long>();
