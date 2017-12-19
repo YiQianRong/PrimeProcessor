@@ -11,7 +11,7 @@ namespace PrimeSolution.Test
         //[Test]
         public void ChineseLeftoversIITest()
         {
-            //Problem 552 Chinese leftovers II
+            //Problem 552 Chinese leftovers II projecteuler.net/problem=552
             //Let An be the smallest positive integer satisfying An mod pi = i for all 1 ≤ i ≤ n, where pi is the i-th prime. 
             //For example A2 = 5, since this is the smallest positive solution of the system of equations 
             // A2 mod 2 = 1 
@@ -33,7 +33,7 @@ namespace PrimeSolution.Test
         [Test]
         public void PrimeTripletsTest()
         {
-            //Problem 196 Prime triplets
+            //Problem 196 Prime triplets projecteuler.net/problem=196
             //Build a triangle from all positive integers in the following way:
             // 1
             // 2-  3-
@@ -125,7 +125,7 @@ namespace PrimeSolution.Test
         [Test]
         public void CircularPrimesTest()
         {
-            //Problem 35 Circular primes
+            //Problem 35 Circular primes projecteuler.net/problem=35
             //The number, 197, is called a circular prime because all rotations of the digits: 197, 971, and 719, are themselves prime.
             //There are thirteen such primes below 100: 2, 3, 5, 7, 11, 13, 17, 31, 37, 71, 73, 79, and 97.
             //How many circular primes are there below one million?
@@ -142,7 +142,7 @@ namespace PrimeSolution.Test
         [Test]
         public void TheSumOfPrimesTest()
         {
-            //Problem 10 Summation of primes
+            //Problem 10 Summation of primes projecteuler.net/problem=10
             //The sum of the primes below 10 is 2 + 3 + 5 + 7 = 17.
             //Find the sum of all the primes below two million.
 
@@ -160,7 +160,7 @@ namespace PrimeSolution.Test
             //By listing the first six prime numbers: 2, 3, 5, 7, 11, and 13, we can see that the 6th prime is 13.
             //What is the 10 001st prime number ?
 
-            //This algorithm is a NP problem, value of prime grows exponentially. But prime list is a P problem, most of non-prime values could be skiped.
+            //This algorithm is a NP problem, values of prime grow exponentially. But prime list is a P problem, most of non-prime values could be skiped.
             var processor = new PrimeProcessor();
             long nth_prime = 10001; //104743
             var largestPrimeFactors = processor.The_nth_Prime(nth_prime);
