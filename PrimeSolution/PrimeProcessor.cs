@@ -21,6 +21,8 @@ namespace PrimeSolution
 
     public class PrimeProcessor
     {
+        protected List<long> Primes = new List<long>();
+
         //Problem 196 Prime triplets
         //Build a triangle from all positive integers in the following way:
         // 1
@@ -46,13 +48,13 @@ namespace PrimeSolution
         //Find  S(5678027) + S(7208785).
 
         // O( n * n * log(n) )
-        public static List<TripletPrime> PrimeTriplets(long n)
+        public List<TripletPrime> PrimeTriplets(long n)
         {
+            Primes = new List<long>();
             var primeTriplets = new Dictionary<long, List<TripletPrime>>();
-            List<long> primes = new List<long>();
-            primes.Add(2);
-            primes.Add(3);
-            primes.Add(5);
+            Primes.Add(2);
+            Primes.Add(3);
+            Primes.Add(5);
 
             long lastNumber = 1;
             var rowList = new List<TripletPrime>();
@@ -70,7 +72,7 @@ namespace PrimeSolution
                 }
 
                 bool isPrime = true;
-                foreach (long prime in primes)
+                foreach (long prime in Primes)
                 {
                     if (i <= prime) continue;
 
@@ -79,9 +81,9 @@ namespace PrimeSolution
 
                 if (isPrime)
                 {
-                    if (!primes.Contains(i) && i > 1)
+                    if (!Primes.Contains(i) && i > 1)
                     {
-                        primes.Add(i);
+                        Primes.Add(i);
                     }
 
                     if (i <= lastNumber)
@@ -114,7 +116,7 @@ namespace PrimeSolution
             return nList;
         }
 
-        public static long SumOfPrimeTriplets(long n)
+        public long SumOfPrimeTriplets(long n)
         {
             var list = PrimeTriplets(n);
 
@@ -155,7 +157,7 @@ namespace PrimeSolution
         //There are thirteen such primes below 100: 2, 3, 5, 7, 11, 13, 17, 31, 37, 71, 73, 79, and 97.
         //How many circular primes are there below one million?
         // O(n * Log(n))
-        public static List<long> CircularPrimes(long n)
+        public List<long> CircularPrimes(long n)
         {
             var circularPrimeList = new List<long>();
             var primes = PrimeList(n);
@@ -204,7 +206,7 @@ namespace PrimeSolution
             return circularPrimeList.OrderBy(p => p).ToList();
         }
 
-        protected static List<long> All_Rotations(string strNumber)
+        protected List<long> All_Rotations(string strNumber)
         {
             List<long> numbers = new List<long>();
             numbers.Add(long.Parse(strNumber));
@@ -226,19 +228,18 @@ namespace PrimeSolution
 
         //Problem 3 Largest prime factor projecteuler.net/problem=3
         //O(n * Log(n))
-        public static List<long> LargestPrimeFactor(long n)
+        public List<long> LargestPrimeFactor(long n)
         {
+            Primes = new List<long>();
             var largestPrimeFactor = new List<long>();
             long printProduct = n;
             bool isPrime = true;
-
-            List<long> primes = new List<long>();
 
             for (long i = 2; i <= n; i++)
             {
                 isPrime = true;
                 //Less than Log(n) here
-                foreach (long prime in primes)
+                foreach (long prime in Primes)
                 {
                     isPrime = isPrime && (i % prime) != 0;
                 }
@@ -246,7 +247,7 @@ namespace PrimeSolution
                 if (isPrime)
                 {
                     long prime = i;
-                    primes.Add(prime);
+                    Primes.Add(prime);
                     bool isPrimeFactor = (printProduct % prime) == 0;
 
                     if (isPrimeFactor && printProduct > 1)
@@ -271,7 +272,7 @@ namespace PrimeSolution
         //The sum of the primes below 10 is 2 + 3 + 5 + 7 = 17.
         //Find the sum of all the primes below two million.
         // O(n * Log(n))
-        public static long TheSumOfPrimesTest(long n)
+        public long TheSumOfPrimesTest(long n)
         {
             long primeProduct = 2000; //277050
             var primeList = PrimeList(primeProduct);
@@ -286,88 +287,87 @@ namespace PrimeSolution
         }
 
         // O(n * Log(n))
-        public static List<long> PrimeList(long n)
+        public List<long> PrimeList(long n)
         {
-            List<long> primes = new List<long>();
-            primes.Add(2);
-            primes.Add(3);
-            primes.Add(5);
-            primes.Add(7);
-            primes.Add(11);
-            primes.Add(13);
-            primes.Add(17);
-            primes.Add(19);
-            primes.Add(23);
-            primes.Add(29);
-            primes.Add(31);
-            primes.Add(37);
-            primes.Add(41);
-            primes.Add(43);
-            primes.Add(47);
-            primes.Add(53);
-            primes.Add(59);
-            primes.Add(61);
+            Primes = new List<long>();
+            Primes.Add(2);
+            Primes.Add(3);
+            Primes.Add(5);
+            Primes.Add(7);
+            Primes.Add(11);
+            Primes.Add(13);
+            Primes.Add(17);
+            Primes.Add(19);
+            Primes.Add(23);
+            Primes.Add(29);
+            Primes.Add(31);
+            Primes.Add(37);
+            Primes.Add(41);
+            Primes.Add(43);
+            Primes.Add(47);
+            Primes.Add(53);
+            Primes.Add(59);
+            Primes.Add(61);
 
             for (long i = 62; i < n; i++)
             {
                 bool isPrime = true;
                 //Less than Log(n) here
-                foreach (long prime in primes)
+                foreach (long prime in Primes)
                 {
                     isPrime = isPrime && (i % prime) != 0;
                 }
 
                 if (isPrime)
                 {
-                    primes.Add(i);
+                    Primes.Add(i);
                 }
             }
 
-            return primes;
+            return Primes;
         }
 
         //Problem 7 10001st prime projecteuler.net/problem=7
         //By listing the first six prime numbers: 2, 3, 5, 7, 11, and 13, we can see that the 6th prime is 13.
         //What is the 10001st prime number ?
-        // O(n * Log(n))
-        public static List<long> The_nth_Prime(long n)
+        //This algorithm is a NP problem, values of prime grow exponentially. But prime list is a P problem, most of non-prime values could be skiped.
+        public List<long> The_nth_Prime(long n)
         {
-            List<long> primes = new List<long>();
-            primes.Add(2);
-            primes.Add(3);
-            primes.Add(5);
-            primes.Add(7);
-            primes.Add(11);
-            primes.Add(13);
-            primes.Add(17);
-            primes.Add(19);
-            primes.Add(23);
-            primes.Add(29);
-            primes.Add(31);
-            primes.Add(37);
-            primes.Add(41);
-            primes.Add(43);
-            primes.Add(47);
-            primes.Add(53);
-            primes.Add(59);
-            primes.Add(61);
+            Primes = new List<long>();
+            Primes.Add(2);
+            Primes.Add(3);
+            Primes.Add(5);
+            Primes.Add(7);
+            Primes.Add(11);
+            Primes.Add(13);
+            Primes.Add(17);
+            Primes.Add(19);
+            Primes.Add(23);
+            Primes.Add(29);
+            Primes.Add(31);
+            Primes.Add(37);
+            Primes.Add(41);
+            Primes.Add(43);
+            Primes.Add(47);
+            Primes.Add(53);
+            Primes.Add(59);
+            Primes.Add(61);
 
-            for (long i = 62; primes.LongCount() < n; i++)
+            for (long i = 62; Primes.LongCount() < n; i++)
             {
                 bool isPrime = true;
-                //Less than Log(n) here
-                foreach (long prime in primes)
+                foreach (long prime in Primes)
                 {
                     isPrime = isPrime && (i % prime) != 0;
                 }
 
                 if (isPrime)
                 {
-                    primes.Add(i);
+                    Primes.Add(i);
                 }
             }
 
-            return primes;
+            return Primes;
         }
     }
 }
