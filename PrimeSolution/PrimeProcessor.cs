@@ -23,7 +23,7 @@ namespace PrimeSolution
     {
         protected List<long> Primes = new List<long>();
 
-        //Problem 196 Prime triplets
+        //Problem 196 Prime triplets projecteuler.net/problem=196
         //Build a triangle from all positive integers in the following way:
         // 1
         // 2-  3-
@@ -152,7 +152,7 @@ namespace PrimeSolution
             }
         }
 
-        //Problem 35 Circular primes
+        //Problem 35 Circular primes projecteuler.net/problem=35
         //The number, 197, is called a circular prime because all rotations of the digits: 197, 971, and 719, are themselves prime.
         //There are thirteen such primes below 100: 2, 3, 5, 7, 11, 13, 17, 31, 37, 71, 73, 79, and 97.
         //How many circular primes are there below one million?
@@ -227,6 +227,9 @@ namespace PrimeSolution
         }
 
         //Problem 3 Largest prime factor projecteuler.net/problem=3
+        //The prime factors of 13195 are 5, 7, 13 and 29.
+        //What is the largest prime factor of the number 600851475143 ?
+
         //O(n * Log(n))
         public List<long> LargestPrimeFactor(long n)
         {
@@ -268,7 +271,7 @@ namespace PrimeSolution
             return largestPrimeFactor;
         }
 
-        //Problem 10 Summation of primes
+        //Problem 10 Summation of primes projecteuler.net/problem=10
         //The sum of the primes below 10 is 2 + 3 + 5 + 7 = 17.
         //Find the sum of all the primes below two million.
         // O(n * Log(n))
