@@ -1,2 +1,0 @@
-# ZocDoc
-ZocDoc
