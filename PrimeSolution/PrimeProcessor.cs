@@ -191,6 +191,8 @@ namespace PrimeSolution
                 foreach (long rotation in numberList)
                 {
                     isContain = isContain && primes.Contains(rotation);
+
+                    if (!isContain) break;
                 }
 
                 if(isContain)
@@ -281,7 +283,7 @@ namespace PrimeSolution
         // O(n * Log(n))
         public long TheSumOfPrimesTest(long n)
         {
-            long primeProduct = 2000; //277050
+            long primeProduct = n; 
             var primeList = PrimeList(primeProduct);
             long result = 0;
 
@@ -300,23 +302,8 @@ namespace PrimeSolution
             Primes.Add(2);
             Primes.Add(3);
             Primes.Add(5);
-            Primes.Add(7);
-            Primes.Add(11);
-            Primes.Add(13);
-            Primes.Add(17);
-            Primes.Add(19);
-            Primes.Add(23);
-            Primes.Add(29);
-            Primes.Add(31);
-            Primes.Add(37);
-            Primes.Add(41);
-            Primes.Add(43);
-            Primes.Add(47);
-            Primes.Add(53);
-            Primes.Add(59);
-            Primes.Add(61);
 
-            for (long i = 63; i < n; i++)
+            for (long i = 6; i < n; i++)
             {
                 bool isPrime = true;
                 //Less than Log(n) here
@@ -346,23 +333,8 @@ namespace PrimeSolution
             Primes.Add(2);
             Primes.Add(3);
             Primes.Add(5);
-            Primes.Add(7);
-            Primes.Add(11);
-            Primes.Add(13);
-            Primes.Add(17);
-            Primes.Add(19);
-            Primes.Add(23);
-            Primes.Add(29);
-            Primes.Add(31);
-            Primes.Add(37);
-            Primes.Add(41);
-            Primes.Add(43);
-            Primes.Add(47);
-            Primes.Add(53);
-            Primes.Add(59);
-            Primes.Add(61);
 
-            for (long i = 63; Primes.LongCount() < n; i++)
+            for (long i = 6; Primes.LongCount() < n; i++)
             {
                 bool isPrime = true;
                 foreach (long prime in Primes)
