@@ -131,11 +131,22 @@ namespace PrimeSolution.Test
             //How many circular primes are there below one million?
 
             //O(n * Log(n))
+
             var processor = new PrimeProcessor();
-            long primeProduct = 100000; //9311
+
+            long primeProduct = 100; //97
             var primeList = processor.CircularPrimes(primeProduct);
             long result = primeList.OrderByDescending(p => p).ToList().FirstOrDefault();
+            Assert.AreEqual(result, 97);
 
+            primeProduct = 1000; //991
+            primeList = processor.CircularPrimes(primeProduct);
+            result = primeList.OrderByDescending(p => p).ToList().FirstOrDefault();
+            Assert.AreEqual(result, 991);
+
+            primeProduct = 10000; //9311
+            primeList = processor.CircularPrimes(primeProduct);
+            result = primeList.OrderByDescending(p => p).ToList().FirstOrDefault();
             Assert.AreEqual(result, 9311);
         }
 
@@ -148,8 +159,12 @@ namespace PrimeSolution.Test
 
             //O(n * Log(n))
             var processor = new PrimeProcessor();
-            long primeProduct = 2000; //277050
+            long primeProduct = 10; //17
             long result = processor.TheSumOfPrimesTest(primeProduct);
+            Assert.AreEqual(result, 17);
+
+            primeProduct = 2000; //277050
+            result = processor.TheSumOfPrimesTest(primeProduct);
             Assert.AreEqual(result, 277050);
         }
 
@@ -162,10 +177,15 @@ namespace PrimeSolution.Test
 
             //This algorithm is a NP problem, values of prime grow exponentially. But prime list is a P problem, most of non-prime values could be skiped.
             var processor = new PrimeProcessor();
-            long nth_prime = 10001; //104743
-            var largestPrimeFactors = processor.The_nth_Prime(nth_prime);
-            var result = largestPrimeFactors[largestPrimeFactors.Count-1];
 
+            long nth_prime = 6; //13
+            var largestPrimeFactors = processor.The_nth_Prime(nth_prime);
+            var result = largestPrimeFactors[largestPrimeFactors.Count - 1];
+            Assert.AreEqual(result, 13);
+
+            nth_prime = 10001; //104743
+            largestPrimeFactors = processor.The_nth_Prime(nth_prime);
+            result = largestPrimeFactors[largestPrimeFactors.Count-1];
             Assert.AreEqual(result, 104743);
         }
 
@@ -178,19 +198,31 @@ namespace PrimeSolution.Test
 
             //O(n * Log(n))
             var processor = new PrimeProcessor();
-            //long printProduct = 13195; //5, 7, 13, 29
-            long primeProduct = 600851475143; //71, 839, 1471, 6857
+            long primeProduct = 13195; //5, 7, 13, 29
             var largestPrimeFactors = processor.LargestPrimeFactor(primeProduct);
-
+            Assert.AreEqual(largestPrimeFactors[0], 5);
+            Assert.AreEqual(largestPrimeFactors[1], 7);
+            Assert.AreEqual(largestPrimeFactors[2], 13);
+            Assert.AreEqual(largestPrimeFactors[3], 29);
             long result = 1;
             foreach (long prime in largestPrimeFactors)
             {
                 result = result * prime;
             }
+            Assert.AreEqual(primeProduct, result);
 
+            primeProduct = 600851475143; //71, 839, 1471, 6857
+            largestPrimeFactors = processor.LargestPrimeFactor(primeProduct);
+            Assert.AreEqual(largestPrimeFactors[0], 71);
+            Assert.AreEqual(largestPrimeFactors[1], 839);
+            Assert.AreEqual(largestPrimeFactors[2], 1471);
+            Assert.AreEqual(largestPrimeFactors[3], 6857);
+            result = 1;
+            foreach (long prime in largestPrimeFactors)
+            {
+                result = result * prime;
+            }
             Assert.AreEqual(primeProduct, result);
         }
-
-
     }
 }
