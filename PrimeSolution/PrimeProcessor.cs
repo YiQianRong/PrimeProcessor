@@ -77,6 +77,8 @@ namespace PrimeSolution
                     if (i <= prime) continue;
 
                     isPrime = isPrime && (i % prime) != 0;
+
+                    if (!isPrime) break;
                 }
 
                 if (isPrime)
@@ -245,6 +247,8 @@ namespace PrimeSolution
                 foreach (long prime in Primes)
                 {
                     isPrime = isPrime && (i % prime) != 0;
+
+                    if (!isPrime) break;
                 }
 
                 if (isPrime)
@@ -312,13 +316,15 @@ namespace PrimeSolution
             Primes.Add(59);
             Primes.Add(61);
 
-            for (long i = 62; i < n; i++)
+            for (long i = 63; i < n; i++)
             {
                 bool isPrime = true;
                 //Less than Log(n) here
                 foreach (long prime in Primes)
                 {
                     isPrime = isPrime && (i % prime) != 0;
+
+                    if (!isPrime) break;
                 }
 
                 if (isPrime)
@@ -356,12 +362,14 @@ namespace PrimeSolution
             Primes.Add(59);
             Primes.Add(61);
 
-            for (long i = 62; Primes.LongCount() < n; i++)
+            for (long i = 63; Primes.LongCount() < n; i++)
             {
                 bool isPrime = true;
                 foreach (long prime in Primes)
                 {
                     isPrime = isPrime && (i % prime) != 0;
+
+                    if (!isPrime) break;
                 }
 
                 if (isPrime)
