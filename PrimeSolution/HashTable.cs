@@ -71,11 +71,7 @@ namespace HashTable
                 }
                 else
                 {
-                    var item = new Bucket<K, V>();
-                    item.Key = key;
-                    item.Val = value;
-                    item.Hash = Collection.Count();
-                    Collection.Add(item);
+                    Add(key, value);
                 }
             }
         }
@@ -115,10 +111,20 @@ namespace HashTable
             return item;
         }
 
+        protected virtual bool IsNullOrEmpty(Object value)
+        {
+            if (Object.ReferenceEquals(value, null))
+                return true;
+
+            var type = value.GetType();
+            return type.IsValueType
+                && Object.Equals(value, Activator.CreateInstance(type));
+        }
+
         // Checks if this hashtable contains an entry with the given key.  
         public virtual bool ContainsKey(Object key)
         {
-            if (key == null)
+            if (IsNullOrEmpty(key))
             {
                 throw new ArgumentNullException("key", "ArgumentNull_Key");
             }
@@ -130,14 +136,14 @@ namespace HashTable
 
         public virtual bool ContainsKey(K key)
         {
-            if (key == null)
+            if (IsNullOrEmpty(key))
             {
                 throw new ArgumentNullException("key", "ArgumentNull_Key");
             }
 
             var item = GetBucket(key);
 
-            return item == null ? false : true;
+            return IsNullOrEmpty(item) ? false : true;
         }
 
         // Checks if this hashtable contains an entry with the given value. The
@@ -149,14 +155,14 @@ namespace HashTable
         {
             var item = GetBucketByValue(value);
 
-            return item == null ? false : true;
+            return IsNullOrEmpty(item) ? false : true;
         }
 
         public virtual bool ContainsValue(V value)
         {
             var item = GetBucketByValue(value);
 
-            return item == null ? false : true;
+            return IsNullOrEmpty(item) ? false : true;
         }
 
         // Internal method to get the hash code for an Object.  This will call
@@ -165,7 +171,7 @@ namespace HashTable
         protected virtual int GetHash(Object key)
         {
             var item = GetBucket(key);
-            if (item != null)
+            if (!IsNullOrEmpty(item))
             {
                 return item.Hash;
             }
@@ -178,7 +184,7 @@ namespace HashTable
         protected virtual int GetHash(K key)
         {
             var item = GetBucket(key);
-            if (item != null)
+            if (!IsNullOrEmpty(item))
             {
                 return item.Hash;
             }
@@ -199,17 +205,17 @@ namespace HashTable
                 return false;
             }
 
-            return item == null ? false : item.Equals(key);
+            return IsNullOrEmpty(item) ? false : item.Equals(key);
         }
 
         protected virtual bool KeyEquals(K item, K key)
         {
-            return item == null ? false : item.Equals(key);
+            return IsNullOrEmpty(item) ? false : item.Equals(key);
         }
 
         protected virtual bool KeyEquals(V item, V val)
         {
-            return item == null ? false : item.Equals(val);
+            return IsNullOrEmpty(item) ? false : item.Equals(val);
         }
 
         // Returns a collection representing the keys of this hashtable. The order 
