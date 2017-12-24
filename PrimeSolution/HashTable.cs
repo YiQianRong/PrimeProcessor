@@ -37,10 +37,10 @@ namespace HashTable
 
         public virtual void Remove(K key)
         {
-            var cell = Collection.Where(i => KeyEquals(i.Key, key)).FirstOrDefault();
-            if (cell != null)
+            int hashCode = GetHash(key);
+            if (hashCode >= 0)
             {
-                Collection.Remove(cell);
+                Collection.Remove(Collection[hashCode]);
             }
         }
 
@@ -52,10 +52,10 @@ namespace HashTable
         public virtual V this[K key]
         {
             get {
-                var cell = Collection.Where( i => KeyEquals(i.Key, key)).FirstOrDefault();
-                if (cell != null)
+                int hashCode = GetHash(key);
+                if (hashCode >= 0 )
                 {
-                    return Collection[cell.Hash].Val;
+                    return Collection[hashCode].Val;
                 }
                 else
                 {
@@ -64,10 +64,10 @@ namespace HashTable
             }
 
             set {
-                var cell = Collection.Where(i => KeyEquals(i.Key, key)).FirstOrDefault();
-                if (cell != null)
+                int hashCode = GetHash(key);
+                if (hashCode >= 0)
                 {
-                    Collection[cell.Hash].Val = value;
+                    Collection[hashCode].Val = value;
                 }
                 else
                 {
@@ -91,6 +91,30 @@ namespace HashTable
             return ContainsKey(key);
         }
 
+        protected virtual Bucket<K, V> GetBucket(K key)
+        {
+            var item = Collection.Where(i => KeyEquals(i.Key, key)).FirstOrDefault();
+            return item;
+        }
+
+        protected virtual Bucket<K, V> GetBucket(Object key)
+        {
+            var item = Collection.Where(i => KeyEquals(i.Key, key)).FirstOrDefault();
+            return item;
+        }
+
+        protected virtual Bucket<K, V> GetBucketByValue(V val)
+        {
+            var item = Collection.Where(i => KeyEquals(i.Val, val)).FirstOrDefault();
+            return item;
+        }
+
+        protected virtual Bucket<K, V> GetBucketByValue(Object val)
+        {
+            var item = Collection.Where(i => KeyEquals(i.Val, val)).FirstOrDefault();
+            return item;
+        }
+
         // Checks if this hashtable contains an entry with the given key.  
         public virtual bool ContainsKey(Object key)
         {
@@ -99,7 +123,7 @@ namespace HashTable
                 throw new ArgumentNullException("key", "ArgumentNull_Key");
             }
 
-            var item = Collection.Where(i => KeyEquals(i.Key, key)).FirstOrDefault();
+            var item = GetBucket(key);
 
             return item == null ? false : true;
         }
@@ -111,7 +135,7 @@ namespace HashTable
                 throw new ArgumentNullException("key", "ArgumentNull_Key");
             }
 
-            var item = Collection.Where(i => KeyEquals(i.Key, key)).FirstOrDefault();
+            var item = GetBucket(key);
 
             return item == null ? false : true;
         }
@@ -123,14 +147,14 @@ namespace HashTable
         // method. 
         public virtual bool ContainsValue(Object value)
         {
-            var item = Collection.Where(i => KeyEquals(i.Val, value)).FirstOrDefault();
+            var item = GetBucketByValue(value);
 
             return item == null ? false : true;
         }
 
         public virtual bool ContainsValue(V value)
         {
-            var item = Collection.Where(i => KeyEquals(i.Val, value)).FirstOrDefault();
+            var item = GetBucketByValue(value);
 
             return item == null ? false : true;
         }
@@ -140,7 +164,28 @@ namespace HashTable
         // instance.  Otherwise, it calls hcp.GetHashCode(obj). 
         protected virtual int GetHash(Object key)
         {
-            return key.GetHashCode();
+            var item = GetBucket(key);
+            if (item != null)
+            {
+                return item.Hash;
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
+        protected virtual int GetHash(K key)
+        {
+            var item = GetBucket(key);
+            if (item != null)
+            {
+                return item.Hash;
+            }
+            else
+            {
+                return -1;
+            }
         }
 
         // Internal method to compare two keys.  If you have provided an IComparer
