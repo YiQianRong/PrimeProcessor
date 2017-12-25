@@ -6,11 +6,22 @@ using System.Threading.Tasks;
 
 namespace HashTable
 {
-    public class Bucket <K, V>
+    public class Bucket <K, V> : IComparable<Bucket<K, V>>
     {
         public K Key { get; set; }
         public V Val { get; set; }
         public int Hash { get; set; }   // Store hash code; which is the index of List<Bucket<K, V>> Collection
+
+        public int CompareTo(Bucket<K, V> other)
+        {
+            int compareResult = 0;
+
+            if (Key is IComparable)
+            {
+                compareResult = (Key as IComparable).CompareTo(other.Key);
+            }
+            return compareResult;
+        }
     }
 
     public class HashTable : HashTable<System.Object, System.Object>
@@ -31,8 +42,12 @@ namespace HashTable
             var item = new Bucket<K, V>();
             item.Key = key;
             item.Val = val;
-            item.Hash = Collection.Count();
             Collection.Add(item);
+        }
+
+        public virtual void Sort()
+        {
+            Collection.Sort(); //order by Bucket.Key
         }
 
         public virtual void Remove(K key)
@@ -77,11 +92,6 @@ namespace HashTable
         }
 
         // Checks if this hashtable contains the given key. 
-        public virtual bool Contains(Object key)
-        {
-            return ContainsKey(key);
-        }
-
         public virtual bool Contains(K key)
         {
             return ContainsKey(key);
@@ -89,26 +99,35 @@ namespace HashTable
 
         protected virtual Bucket<K, V> GetBucket(K key)
         {
-            var item = Collection.Where(i => KeyEquals(i.Key, key)).FirstOrDefault();
-            return item;
-        }
+            int index = GetHash(key);
 
-        protected virtual Bucket<K, V> GetBucket(Object key)
-        {
-            var item = Collection.Where(i => KeyEquals(i.Key, key)).FirstOrDefault();
-            return item;
+            if (index >= 0)
+            {
+                var item = Collection[index];
+                item.Hash = index;
+                return item;
+            }
+
+            return default(Bucket<K, V>);
         }
 
         protected virtual Bucket<K, V> GetBucketByValue(V val)
         {
-            var item = Collection.Where(i => KeyEquals(i.Val, val)).FirstOrDefault();
-            return item;
-        }
+            int index = Collection.FindIndex(
+                    delegate (Bucket<K, V> cell)
+                    {
+                        return ValueEquals(cell.Val, val);
+                    }
+                );
 
-        protected virtual Bucket<K, V> GetBucketByValue(Object val)
-        {
-            var item = Collection.Where(i => KeyEquals(i.Val, val)).FirstOrDefault();
-            return item;
+            if (index >= 0)
+            {
+                var item = Collection[index];
+                item.Hash = index;
+                return item;
+            }
+
+            return default(Bucket<K, V>);
         }
 
         protected virtual bool IsNullOrEmpty(Object value)
@@ -122,18 +141,6 @@ namespace HashTable
         }
 
         // Checks if this hashtable contains an entry with the given key.  
-        public virtual bool ContainsKey(Object key)
-        {
-            if (IsNullOrEmpty(key))
-            {
-                throw new ArgumentNullException("key", "ArgumentNull_Key");
-            }
-
-            var item = GetBucket(key);
-
-            return item == null ? false : true;
-        }
-
         public virtual bool ContainsKey(K key)
         {
             if (IsNullOrEmpty(key))
@@ -142,7 +149,6 @@ namespace HashTable
             }
 
             var item = GetBucket(key);
-
             return IsNullOrEmpty(item) ? false : true;
         }
 
@@ -151,13 +157,6 @@ namespace HashTable
         // using the Object.Equals method. This method performs a linear 
         // search and is thus be substantially slower than the ContainsKey
         // method. 
-        public virtual bool ContainsValue(Object value)
-        {
-            var item = GetBucketByValue(value);
-
-            return IsNullOrEmpty(item) ? false : true;
-        }
-
         public virtual bool ContainsValue(V value)
         {
             var item = GetBucketByValue(value);
@@ -168,52 +167,27 @@ namespace HashTable
         // Internal method to get the hash code for an Object.  This will call
         // GetHashCode() on each object if you haven't provided an IHashCodeProvider 
         // instance.  Otherwise, it calls hcp.GetHashCode(obj). 
-        protected virtual int GetHash(Object key)
-        {
-            var item = GetBucket(key);
-            if (!IsNullOrEmpty(item))
-            {
-                return item.Hash;
-            }
-            else
-            {
-                return -1;
-            }
-        }
-
         protected virtual int GetHash(K key)
         {
-            var item = GetBucket(key);
-            if (!IsNullOrEmpty(item))
-            {
-                return item.Hash;
-            }
-            else
-            {
-                return -1;
-            }
+            int hash = Collection.FindIndex(
+                    delegate (Bucket<K, V> cell)
+                    {
+                        return KeyEquals(cell.Key, key);
+                    }
+                );
+
+            return hash;
         }
 
         // Internal method to compare two keys.  If you have provided an IComparer
         // instance in the constructor, this method will call comparer.Compare(item, key).
         // Otherwise, it will call item.Equals(key). 
-        //
-        protected virtual bool KeyEquals(Object item, Object key)
-        {
-            if (Object.ReferenceEquals(key, item))
-            {
-                return false;
-            }
-
-            return IsNullOrEmpty(item) ? false : item.Equals(key);
-        }
-
         protected virtual bool KeyEquals(K item, K key)
         {
             return IsNullOrEmpty(item) ? false : item.Equals(key);
         }
 
-        protected virtual bool KeyEquals(V item, V val)
+        protected virtual bool ValueEquals(V item, V val)
         {
             return IsNullOrEmpty(item) ? false : item.Equals(val);
         }
