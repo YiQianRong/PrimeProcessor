@@ -38,9 +38,10 @@ namespace HashTable
     }
 
     //This HashTable algorithm is using SortedSet (balanced tree) as container
+    //Use Hashtable interface
     //Reduce the usage of memory to minimum.
     //Avoid memory restucture, bucket collision like orignal Hashtable
-    //Add, Remove, Search are O(log(n))
+    //Add, Remove, Set, Get, Search are O(log(n))
     public class HashTable<K, V>
     {
         protected MicrosoftResearch.Infer.Collections.SortedSet<Bucket<K, V>> Collection = 
