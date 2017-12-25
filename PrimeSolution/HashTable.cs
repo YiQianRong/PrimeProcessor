@@ -5,7 +5,7 @@ using MicrosoftResearch.Infer.Collections;
 
 namespace HashTable
 {
-    public class Bucket <K, V> : IComparable<Bucket<K, V>>
+    public class Bucket<K, V> : IComparable<Bucket<K, V>>
     {
         public K Key { get; set; }
         public V Val { get; set; }
@@ -23,13 +23,24 @@ namespace HashTable
         }
     }
 
+    // Defines a comparer to create a sorted set
+    // that is sorted by the file extensions.
+    public class SortedByBucketKey<K, V> : IComparer<Bucket<K, V>>
+    {
+        public int Compare(Bucket<K, V> x, Bucket<K, V> y)
+        {
+            return x.CompareTo(y);
+        }
+    }
+
     public class HashTable : HashTable<System.Object, System.Object>
     {
     }
 
     public class HashTable<K, V>
     {
-        protected MicrosoftResearch.Infer.Collections.SortedSet<Bucket<K, V>> Collection = new MicrosoftResearch.Infer.Collections.SortedSet<Bucket<K, V>>();
+        protected MicrosoftResearch.Infer.Collections.SortedSet<Bucket<K, V>> Collection = 
+                    new MicrosoftResearch.Infer.Collections.SortedSet<Bucket<K, V>>(new SortedByBucketKey<K, V>());
 
         public virtual void Add(K key, V val)
         {
