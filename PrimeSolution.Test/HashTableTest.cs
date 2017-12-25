@@ -19,7 +19,7 @@ namespace HashTable.Test
             hashTable[210] = "Test8";
             hashTable[11] = "Test2";
 
-            int index = 101;
+            int index = 310;
             Assert.AreEqual(hashTable.GetBucketByIndex(hashTable.BinarySearch(index)).Key, index);
             index = 988;
             Assert.AreEqual(hashTable.GetBucketByIndex(hashTable.BinarySearch(index)).Key, index);
