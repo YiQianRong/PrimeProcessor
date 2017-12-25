@@ -60,7 +60,7 @@ namespace HashTable
             int hashCode = GetHash(key);
             if (hashCode >= 0)
             {
-                var item = Collection.ElementAt(hashCode);
+                var item = Collection[hashCode];
                 Collection.Remove(item);
             }
         }
@@ -109,7 +109,7 @@ namespace HashTable
 
             if (index >= 0)
             {
-                var item = Collection.ElementAt(index);
+                var item = Collection[index];
                 item.Hash = index;
                 return item;
             }
@@ -170,11 +170,10 @@ namespace HashTable
             return IsNullOrEmpty(item) ? false : true;
         }
 
-        // Internal method to get the hash code for an Object.  This will call
-        // GetHashCode() on each object if you haven't provided an IHashCodeProvider 
-        // instance.  Otherwise, it calls hcp.GetHashCode(obj). 
+        // Internal method to get the hash code for an Object.  
         protected virtual int GetHash(K key)
         {
+            //This is O(n), to write a binary search will be O(Log(n))
             int hash = Collection.FindIndex(
                     delegate (Bucket<K, V> cell)
                     {
