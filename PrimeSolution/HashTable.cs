@@ -24,12 +24,12 @@ namespace HashTable
     }
 
     // Defines a comparer to create a sorted set
-    // that is sorted by the file extensions.
+    // that is sorted by the Bucket.Key
     public class SortedByBucketKey<K, V> : IComparer<Bucket<K, V>>
     {
         public int Compare(Bucket<K, V> x, Bucket<K, V> y)
         {
-            return x.CompareTo(y);
+            return (x.Key as IComparable).CompareTo(y.Key);
         }
     }
 
@@ -37,6 +37,10 @@ namespace HashTable
     {
     }
 
+    //This HashTable algorithm is using SortedSet (balanced tree) as container
+    //Reduce the usage of memory to minimum.
+    //Avoid memory restucture, bucket collision like orignal Hashtable
+    //Add, Remove, Search are O(log(n))
     public class HashTable<K, V>
     {
         protected MicrosoftResearch.Infer.Collections.SortedSet<Bucket<K, V>> Collection = 
@@ -173,15 +177,91 @@ namespace HashTable
         // Internal method to get the hash code for an Object.  
         protected virtual int GetHash(K key)
         {
-            //This is O(n), to write a binary search will be O(Log(n))
-            int hash = Collection.FindIndex(
-                    delegate (Bucket<K, V> cell)
-                    {
-                        return KeyEquals(cell.Key, key);
-                    }
-                );
+            //This is O(n)
+            //int hash = Collection.FindIndex(
+            //        delegate (Bucket<K, V> cell)
+            //        {
+            //            return KeyEquals(cell.Key, key);
+            //        }
+            //    );
 
+            //binary search O(Log(n))
+            int hash = BinarySearch(key);
             return hash;
+        }
+
+        public virtual Bucket<K, V> GetBucketByIndex(int index)
+        {
+            var item = Collection[index];
+            item.Hash = index;
+            return item;
+        }
+
+        public virtual int BinarySearch(K key)
+        {
+            //Binary search O(Log(n))
+            int lowIndex = 0;
+            int highIndex = Collection.Count - 1;
+            int midIndex = (highIndex - lowIndex) / 2;
+
+            do
+            {
+                if(midIndex >= Collection.Count)
+                {
+                    return -1;
+                }
+
+                var item = Collection[midIndex];
+                int compareResult = 0;
+                if (item.Key is IComparable)
+                {
+                    compareResult = (item.Key as IComparable).CompareTo(key);
+                }
+
+                if(compareResult == 0)
+                {
+                    lowIndex = midIndex;
+                    highIndex = midIndex;
+                }else if (compareResult > 0)
+                {
+                    highIndex = midIndex;
+                    if (midIndex == lowIndex + 1)
+                    {
+                        midIndex = lowIndex;
+                    }
+                    else
+                    {
+                        midIndex = lowIndex + (highIndex - lowIndex) / 2;
+                    }
+                }
+                else if (compareResult < 0)
+                {
+                    lowIndex = midIndex;
+                    if (highIndex == midIndex + 1)
+                    {
+                        midIndex = highIndex;
+                    }
+                    else
+                    {
+                        midIndex = lowIndex + (highIndex - lowIndex) / 2;
+                    }
+                }
+
+            } while (lowIndex != midIndex && midIndex != highIndex);
+
+            var itemLast = Collection[midIndex];
+            int compareResultLast = 0;
+            if (itemLast.Key is IComparable)
+            {
+                compareResultLast = (itemLast.Key as IComparable).CompareTo(key);
+            }
+
+            if(compareResultLast != 0)
+            {
+                return -1;
+            }
+
+            return midIndex;
         }
 
         // Internal method to compare two keys.  If you have provided an IComparer
