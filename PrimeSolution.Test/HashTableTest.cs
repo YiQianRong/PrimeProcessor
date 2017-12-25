@@ -10,6 +10,7 @@ namespace HashTable.Test
             var hashTable = new HashTable<int, string>();
             hashTable[1] = "Test1";
             hashTable[100] = "Test2";
+            hashTable.Sort();
             Assert.AreEqual(hashTable[1], "Test1");
             Assert.AreEqual(hashTable[100], "Test2");
             Assert.AreEqual(hashTable.Count, 2);
@@ -25,6 +26,7 @@ namespace HashTable.Test
             var hashTable = new HashTable();
             hashTable[2] = "Test1";
             hashTable[200] = "Test2";
+            hashTable.Sort();
             Assert.AreEqual(hashTable[2], "Test1");
             Assert.AreEqual(hashTable[200], "Test2");
             hashTable.Remove(200);
