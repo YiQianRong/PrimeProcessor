@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MicrosoftResearch.Infer.Collections;
 
 namespace HashTable
 {
@@ -30,7 +29,7 @@ namespace HashTable
 
     public class HashTable<K, V>
     {
-        protected List<Bucket<K, V>> Collection = new List<Bucket<K, V>>();
+        protected MicrosoftResearch.Infer.Collections.SortedSet<Bucket<K, V>> Collection = new MicrosoftResearch.Infer.Collections.SortedSet<Bucket<K, V>>();
 
         public virtual void Add(K key, V val)
         {
@@ -45,17 +44,13 @@ namespace HashTable
             Collection.Add(item);
         }
 
-        public virtual void Sort()
-        {
-            Collection.Sort(); //order by Bucket.Key
-        }
-
         public virtual void Remove(K key)
         {
             int hashCode = GetHash(key);
             if (hashCode >= 0)
             {
-                Collection.Remove(Collection[hashCode]);
+                var item = Collection.ElementAt(hashCode);
+                Collection.Remove(item);
             }
         }
 
@@ -103,7 +98,7 @@ namespace HashTable
 
             if (index >= 0)
             {
-                var item = Collection[index];
+                var item = Collection.ElementAt(index);
                 item.Hash = index;
                 return item;
             }
