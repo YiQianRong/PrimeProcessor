@@ -1,4 +1,9 @@
 
+www.codechef.com
+www.topcoder.com
+https://projecteuler.net/archives
+http://rosalind.info/problems/list-view/
+
 Prerequisites
 --------
 * The project was created using Visual Studio 2017 Community Edition, but you can use older version of Visual Studio or VS Code
