@@ -4,6 +4,13 @@ namespace HashTable.Test
 {
     class HashTableTest
     {
+        private void CheckBucketByKey(HashTable<int, string> hashTable, int key)
+        {
+            var index = hashTable.BinarySearch(key);
+            var item = hashTable.GetBucketByIndex(index);
+            Assert.AreEqual(item.Key, key);
+        }
+
         [Test]
         public void HashTableBinarySearchTest()
         {
@@ -19,27 +26,16 @@ namespace HashTable.Test
             hashTable[210] = "Test8";
             hashTable[11] = "Test2";
 
-            int index = 310;
-            Assert.AreEqual(hashTable.GetBucketByIndex(hashTable.BinarySearch(index)).Key, index);
-            index = 988;
-            Assert.AreEqual(hashTable.GetBucketByIndex(hashTable.BinarySearch(index)).Key, index);
-            index = 23;
-            Assert.AreEqual(hashTable.GetBucketByIndex(hashTable.BinarySearch(index)).Key, index);
-            index = 37;
-            Assert.AreEqual(hashTable.GetBucketByIndex(hashTable.BinarySearch(index)).Key, index);
-            index = 100;
-            Assert.AreEqual(hashTable.GetBucketByIndex(hashTable.BinarySearch(index)).Key, index);
-            index = 101;
-            Assert.AreEqual(hashTable.GetBucketByIndex(hashTable.BinarySearch(index)).Key, index);
-            index = 5;
-            Assert.AreEqual(hashTable.GetBucketByIndex(hashTable.BinarySearch(index)).Key, index);
-            index = 13;
-            Assert.AreEqual(hashTable.GetBucketByIndex(hashTable.BinarySearch(index)).Key, index);
-            index = 210;
-            Assert.AreEqual(hashTable.GetBucketByIndex(hashTable.BinarySearch(index)).Key, index);
-            index = 11;
-            Assert.AreEqual(hashTable.GetBucketByIndex(hashTable.BinarySearch(index)).Key, index);
-
+            CheckBucketByKey(hashTable, 310);
+            CheckBucketByKey(hashTable, 988);
+            CheckBucketByKey(hashTable, 23);
+            CheckBucketByKey(hashTable, 37);
+            CheckBucketByKey(hashTable, 100);
+            CheckBucketByKey(hashTable, 101);
+            CheckBucketByKey(hashTable, 5);
+            CheckBucketByKey(hashTable, 13);
+            CheckBucketByKey(hashTable, 210);
+            CheckBucketByKey(hashTable, 11);
         }
 
         [Test]

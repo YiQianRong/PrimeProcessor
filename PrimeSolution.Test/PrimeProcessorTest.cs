@@ -30,6 +30,17 @@ namespace PrimeSolution.Test
             //Find S(300000).
         }
 
+        private void CheckRow(PrimeProcessor processor, int row, int[] primes, int sum)
+        {
+            var primeList = processor.PrimeTriplets(row);
+            for(int i = 0; i < primes.Length; i++)
+            {
+                Assert.AreEqual(primeList[i + 1].Prime, primes[i]);
+            }
+            var sumPrimeTriplets = processor.SumOfPrimeTriplets(row);
+            Assert.AreEqual(sumPrimeTriplets, sum);
+        }
+
         [Test]
         public void PrimeTripletsTest()
         {
@@ -63,63 +74,42 @@ namespace PrimeSolution.Test
             var primeList = processor.PrimeTriplets(1);
             Assert.AreEqual(primeList[1].Prime, 1);
 
-            primeList = processor.PrimeTriplets(2);
-            Assert.AreEqual(primeList[1].Prime, 2);
-            Assert.AreEqual(primeList[2].Prime, 3);
-            var sumPrimeTriplets = processor.SumOfPrimeTriplets(2);
-            Assert.AreEqual(sumPrimeTriplets, 5);
+            int row = 2; int[] primes = new int[] { 2, 3 }; int sum = 5;
+            CheckRow(processor, row, primes, sum);
 
-            primeList = processor.PrimeTriplets(3);
-            Assert.AreEqual(primeList[1].Prime, 5);
-            sumPrimeTriplets = processor.SumOfPrimeTriplets(3);
-            Assert.AreEqual(sumPrimeTriplets, 5);
+            row = 3; primes = new int[] { 5 }; sum = 5;
+            CheckRow(processor, row, primes, sum);
 
-            primeList = processor.PrimeTriplets(4);
-            Assert.AreEqual(primeList[1].Prime, 7);
-            sumPrimeTriplets = processor.SumOfPrimeTriplets(4);
-            Assert.AreEqual(sumPrimeTriplets, 7);
+            row = 4; primes = new int[] { 7 }; sum = 7;
+            CheckRow(processor, row, primes, sum);
 
-            primeList = processor.PrimeTriplets(5);
-            Assert.AreEqual(primeList[1].Prime, 11);
-            Assert.AreEqual(primeList[2].Prime, 13);
-            sumPrimeTriplets = processor.SumOfPrimeTriplets(5);
-            Assert.AreEqual(sumPrimeTriplets, 24);
+            row = 5; primes = new int[] { 11, 13 }; sum = 24;
+            CheckRow(processor, row, primes, sum);
 
-            primeList = processor.PrimeTriplets(6);
-            Assert.AreEqual(primeList[1].Prime, 17);
-            Assert.AreEqual(primeList[2].Prime, 19);
-            sumPrimeTriplets = processor.SumOfPrimeTriplets(6);
-            Assert.AreEqual(sumPrimeTriplets, 36);
+            row = 6; primes = new int[] { 17, 19 }; sum = 36;
+            CheckRow(processor, row, primes, sum);
 
-            primeList = processor.PrimeTriplets(7);
-            Assert.AreEqual(primeList[1].Prime, 23);
-            sumPrimeTriplets = processor.SumOfPrimeTriplets(7);
-            Assert.AreEqual(sumPrimeTriplets, 23);
+            row = 7; primes = new int[] { 23 }; sum = 23;
+            CheckRow(processor, row, primes, sum);
 
-            primeList = processor.PrimeTriplets(8);
-            Assert.AreEqual(primeList[1].Prime, 29);
-            Assert.AreEqual(primeList[2].Prime, 31);
-            sumPrimeTriplets = processor.SumOfPrimeTriplets(8);
-            Assert.AreEqual(sumPrimeTriplets, 60);
+            row = 8; primes = new int[] { 29, 31 }; sum = 60;
+            CheckRow(processor, row, primes, sum);
 
-            primeList = processor.PrimeTriplets(9);
-            Assert.AreEqual(primeList[1].Prime, 37);
-            Assert.AreEqual(primeList[2].Prime, 41);
-            Assert.AreEqual(primeList[3].Prime, 43);
-            sumPrimeTriplets = processor.SumOfPrimeTriplets(9);
-            Assert.AreEqual(sumPrimeTriplets, 37);
+            row = 9; primes = new int[] { 37, 41, 43 }; sum = 37;
+            CheckRow(processor, row, primes, sum);
 
-            primeList = processor.PrimeTriplets(10);
-            Assert.AreEqual(primeList[1].Prime, 47);
-            Assert.AreEqual(primeList[2].Prime, 53);
-            sumPrimeTriplets = processor.SumOfPrimeTriplets(10);
-            Assert.AreEqual(sumPrimeTriplets, 47);
+            row = 10; primes = new int[] { 47, 53 }; sum = 47;
+            CheckRow(processor, row, primes, sum);
 
-            primeList = processor.PrimeTriplets(11);
-            Assert.AreEqual(primeList[1].Prime, 59);
-            Assert.AreEqual(primeList[2].Prime, 61);
-            sumPrimeTriplets = processor.SumOfPrimeTriplets(11);
-            Assert.AreEqual(sumPrimeTriplets, 120);
+            row = 11; primes = new int[] { 59, 61 }; sum = 120;
+            CheckRow(processor, row, primes, sum);
+        }
+
+        private void CheckCircularPrimes(PrimeProcessor processor, int maxNumber, int maxPrime)
+        {
+            var primeList = processor.CircularPrimes(maxNumber);
+            long result = primeList.OrderByDescending(p => p).ToList().FirstOrDefault();
+            Assert.AreEqual(result, maxPrime);
         }
 
         [Test]
@@ -133,21 +123,15 @@ namespace PrimeSolution.Test
             //O(n * Log(n))
 
             var processor = new PrimeProcessor();
+            CheckCircularPrimes(processor, 100, 97);
+            CheckCircularPrimes(processor, 1000, 991);
+            CheckCircularPrimes(processor, 10000, 9311);
+        }
 
-            long primeProduct = 100; //97
-            var primeList = processor.CircularPrimes(primeProduct);
-            long result = primeList.OrderByDescending(p => p).ToList().FirstOrDefault();
-            Assert.AreEqual(result, 97);
-
-            primeProduct = 1000; //991
-            primeList = processor.CircularPrimes(primeProduct);
-            result = primeList.OrderByDescending(p => p).ToList().FirstOrDefault();
-            Assert.AreEqual(result, 991);
-
-            primeProduct = 10000; //9311
-            primeList = processor.CircularPrimes(primeProduct);
-            result = primeList.OrderByDescending(p => p).ToList().FirstOrDefault();
-            Assert.AreEqual(result, 9311);
+        private void CheckTheSumOfPrimes(PrimeProcessor processor, int max, int sumPrimes)
+        {
+            long result = processor.TheSumOfPrimes(max);
+            Assert.AreEqual(result, sumPrimes);
         }
 
         [Test]
@@ -159,13 +143,15 @@ namespace PrimeSolution.Test
 
             //O(n * Log(n))
             var processor = new PrimeProcessor();
-            long primeProduct = 10; //17
-            long result = processor.TheSumOfPrimesTest(primeProduct);
-            Assert.AreEqual(result, 17);
+            CheckTheSumOfPrimes(processor, 10, 17);
+            CheckTheSumOfPrimes(processor, 2000, 277050);
+        }
 
-            primeProduct = 2000; //277050
-            result = processor.TheSumOfPrimesTest(primeProduct);
-            Assert.AreEqual(result, 277050);
+        private void CheckThe_nth_Prime(PrimeProcessor processor, long nth_prime, int prime)
+        {
+            var largestPrimeFactors = processor.The_nth_Prime(nth_prime);
+            var result = largestPrimeFactors[largestPrimeFactors.Count - 1];
+            Assert.AreEqual(result, prime);
         }
 
         [Test]
@@ -177,16 +163,24 @@ namespace PrimeSolution.Test
 
             //This algorithm is a NP problem, values of prime grow exponentially. But prime list is a P problem, most of non-prime values could be skiped.
             var processor = new PrimeProcessor();
+            CheckThe_nth_Prime(processor, 6, 13);
+            CheckThe_nth_Prime(processor, 10001, 104743);
+        }
 
-            long nth_prime = 6; //13
-            var largestPrimeFactors = processor.The_nth_Prime(nth_prime);
-            var result = largestPrimeFactors[largestPrimeFactors.Count - 1];
-            Assert.AreEqual(result, 13);
+        private void CheckLargestPrimeFactors(PrimeProcessor processor, long primeProduct, long [] primes)
+        {
+            var largestPrimeFactors = processor.LargestPrimeFactor(primeProduct);
+            for(int i = 0; i < primes.Length; i++)
+            {
+                Assert.AreEqual(largestPrimeFactors[i], primes[i]);
+            }
 
-            nth_prime = 10001; //104743
-            largestPrimeFactors = processor.The_nth_Prime(nth_prime);
-            result = largestPrimeFactors[largestPrimeFactors.Count-1];
-            Assert.AreEqual(result, 104743);
+            long result = 1;
+            foreach (long prime in largestPrimeFactors)
+            {
+                result = result * prime;
+            }
+            Assert.AreEqual(primeProduct, result);
         }
 
         [Test]
@@ -198,31 +192,8 @@ namespace PrimeSolution.Test
 
             //O(n * Log(n))
             var processor = new PrimeProcessor();
-            long primeProduct = 13195; //5, 7, 13, 29
-            var largestPrimeFactors = processor.LargestPrimeFactor(primeProduct);
-            Assert.AreEqual(largestPrimeFactors[0], 5);
-            Assert.AreEqual(largestPrimeFactors[1], 7);
-            Assert.AreEqual(largestPrimeFactors[2], 13);
-            Assert.AreEqual(largestPrimeFactors[3], 29);
-            long result = 1;
-            foreach (long prime in largestPrimeFactors)
-            {
-                result = result * prime;
-            }
-            Assert.AreEqual(primeProduct, result);
-
-            primeProduct = 600851475143; //71, 839, 1471, 6857
-            largestPrimeFactors = processor.LargestPrimeFactor(primeProduct);
-            Assert.AreEqual(largestPrimeFactors[0], 71);
-            Assert.AreEqual(largestPrimeFactors[1], 839);
-            Assert.AreEqual(largestPrimeFactors[2], 1471);
-            Assert.AreEqual(largestPrimeFactors[3], 6857);
-            result = 1;
-            foreach (long prime in largestPrimeFactors)
-            {
-                result = result * prime;
-            }
-            Assert.AreEqual(primeProduct, result);
+            CheckLargestPrimeFactors(processor, 13195, new long[] { 5, 7, 13, 29 });
+            CheckLargestPrimeFactors(processor, 600851475143, new long[] { 71, 839, 1471, 6857 });
         }
     }
 }
