@@ -281,10 +281,9 @@ namespace PrimeSolution
         //The sum of the primes below 10 is 2 + 3 + 5 + 7 = 17.
         //Find the sum of all the primes below two million.
         // O(n * Log(n))
-        public long TheSumOfPrimesTest(long n)
+        public long TheSumOfPrimes(long max)
         {
-            long primeProduct = n; 
-            var primeList = PrimeList(primeProduct);
+            var primeList = PrimeList(max);
             long result = 0;
 
             foreach (long prime in primeList)
@@ -296,14 +295,14 @@ namespace PrimeSolution
         }
 
         // O(n * Log(n))
-        public List<long> PrimeList(long n)
+        public List<long> PrimeList(long max)
         {
             Primes = new List<long>();
             Primes.Add(2);
             Primes.Add(3);
             Primes.Add(5);
 
-            for (long i = 6; i < n; i++)
+            for (long i = 6; i < max; i++)
             {
                 bool isPrime = true;
                 //Less than Log(n) here
@@ -327,14 +326,14 @@ namespace PrimeSolution
         //By listing the first six prime numbers: 2, 3, 5, 7, 11, and 13, we can see that the 6th prime is 13.
         //What is the 10001st prime number ?
         //This algorithm is a NP problem, values of prime grow exponentially. But prime list is a P problem, most of non-prime values could be skiped.
-        public List<long> The_nth_Prime(long n)
+        public List<long> The_nth_Prime(long n_th)
         {
             Primes = new List<long>();
             Primes.Add(2);
             Primes.Add(3);
             Primes.Add(5);
 
-            for (long i = 6; Primes.LongCount() < n; i++)
+            for (long i = 6; Primes.LongCount() < n_th; i++)
             {
                 bool isPrime = true;
                 foreach (long prime in Primes)
