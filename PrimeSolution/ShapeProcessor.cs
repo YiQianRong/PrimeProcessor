@@ -101,11 +101,6 @@ namespace Processor
 
         protected List<Line> Find_Start_End_Pixel_On_Lines(int j)
         {
-            if (j == 132)
-            {
-                int ii = 0;
-            }
-
             int x = 0;
             var list = new List<Line>();
             var pict = image.Size;
