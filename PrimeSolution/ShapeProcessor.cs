@@ -18,13 +18,15 @@ namespace Processor
         public ShapeProcessor(string filename)
         {
             String executablePath = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            image = new Bitmap(executablePath + @"\..\..\" + filename);
+            string path = String.Format(@"{0}\..\..\{1}", executablePath, filename);
+            image = new Bitmap(path);
         }
 
-        public void Save()
+        public void Save(string filename)
         {
             String executablePath = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            image.Save(executablePath + @"\..\..\Shape2.bmp");
+            string path = String.Format(@"{0}\..\..\{1}", executablePath, filename);
+            image.Save(path);
         }
 
         //The size of a shap is the number of pixels in a shap
@@ -35,6 +37,7 @@ namespace Processor
             int size = 0;
 
             var pict = image.Size;
+            int shapNumber = 1;
             for(int j = 0; j< pict.Height; j++)
             {
                 for(int i = 0; i< pict.Width; i++)
@@ -44,7 +47,9 @@ namespace Processor
                     if(currShapSize > 0 && !sizeList.Contains(currShapSize))
                     {
                         sizeList.Add(currShapSize);
-                        //Save();
+                        string filename = String.Format("Shap_{0}_{1}.bmp", shapNumber, currShapSize);
+                        shapNumber++;
+                        Save(filename);
                     }
                 }
             }
