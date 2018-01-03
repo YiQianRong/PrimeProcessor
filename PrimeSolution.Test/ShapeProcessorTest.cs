@@ -15,7 +15,7 @@ namespace Processor.Test
         [Test]
         public void MaxShapeSizeTest()
         {
-            var processor = new ShapeProcessor(@"Shape0.bmp");
+            var processor = new ShapeProcessor("Shape0", "bmp");
             int size = processor.GetMaxSizeOfShape();
             Assert.AreEqual(size, 6833);
         }
