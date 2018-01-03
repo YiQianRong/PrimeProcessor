@@ -14,12 +14,22 @@ namespace Processor
     public class ShapeProcessor
     {
         protected Bitmap image;
+        protected string FileName;
+        protected string FileExt;
+        protected int SizeOfShape;
 
-        public ShapeProcessor(string filename)
+        public ShapeProcessor(string filename, string fileExt)
+        {
+            FileName = filename;
+            FileExt = fileExt;
+        }
+
+        public void LoadImage()
         {
             String executablePath = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string path = String.Format(@"{0}\..\..\{1}", executablePath, filename);
+            string path = String.Format(@"{0}\..\..\{1}.{2}", executablePath, FileName, FileExt);
             image = new Bitmap(path);
+            SizeOfShape = 0;
         }
 
         public void Save(string filename)
@@ -33,6 +43,7 @@ namespace Processor
         //To find out the maximum size of shape in a bitmap - Shape0.bmp
         public int GetMaxSizeOfShape()
         {
+            LoadImage();
             var sizeList = new MicrosoftResearch.Infer.Collections.SortedSet<int>();
             int size = 0;
 
@@ -47,7 +58,7 @@ namespace Processor
                     if(currShapeSize > 0 && !sizeList.Contains(currShapeSize))
                     {
                         sizeList.Add(currShapeSize);
-                        string filename = String.Format("Shape_{0}_{1}.bmp", shapeNumber, currShapeSize);
+                        string filename = String.Format("{0}_{1}_{2}.{3}", FileName, shapeNumber, currShapeSize, FileExt);
                         shapeNumber++;
                         Save(filename);
                     }
@@ -66,6 +77,86 @@ namespace Processor
             return one.ToArgb().Equals(two.ToArgb());
         }
 
+        protected bool Previous_Row_Has_Any_Red_Pixel(int j, int iFirst, int iEnd)
+        {
+            //To check previous row has one red pixel
+            bool prevRowHasRedPixel = false;
+            for (int i = iFirst; i <= iEnd; i++)
+            {
+                if (j > 0 && CompareColors(image.GetPixel(i, j - 1), Color.Red))
+                {
+                    prevRowHasRedPixel = true;
+                    break;
+                }
+            }
+
+            return prevRowHasRedPixel;
+        }
+
+        protected void Find_Start_End_Pixel_On_A_Line(int x, int j, ref int iFirst, ref int iEnd)
+        {
+            var pict = image.Size;
+            if (!CompareColors(image.GetPixel(x, j), Color.Black))
+            {
+                //To find one black pixel in a row
+                for (int f = x; f < pict.Width; f++)
+                {
+                    if (CompareColors(image.GetPixel(f, j), Color.Black))
+                    {
+                        x = f;
+                        break;
+                    }
+                }
+            }
+
+            if (CompareColors(image.GetPixel(x, j), Color.Black))
+            {
+                //Find first black pixel in a row
+                for (int b = x; b >= 0; b--)
+                {
+                    if (CompareColors(image.GetPixel(b, j), Color.Black))
+                    {
+                        iFirst = b;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                //Find last black pixel in a row
+                for (int e = x; e < pict.Width; e++)
+                {
+                    if (CompareColors(image.GetPixel(e, j), Color.Black))
+                    {
+                        iEnd = e;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        protected void Count_Pixels_On_A_Line_Change_It_To_Red(int j, int iFirst, int iEnd)
+        {
+            for (int i = iFirst; i <= iEnd; i++)
+            {
+                //To count black pixel, then set it to red
+                if (CompareColors(image.GetPixel(i, j), Color.Black))
+                {
+                    SizeOfShape++;
+                    image.SetPixel(i, j, Color.Red);
+                }
+                //End when it is while pixel
+                else if (CompareColors(image.GetPixel(i, j), Color.White))
+                {
+                    break;
+                }
+            }
+        }
+
         public int FindShapeSize(int x, int y)
         {
             //Return 0 this pattern
@@ -76,128 +167,32 @@ namespace Processor
                 return 0;
             }
 
-            int size = 0;
+            SizeOfShape = 0;
             var pict = image.Size;
             for (int j = y; j < pict.Height; j++)
             {
                 int iFirst = x;
                 int iEnd = x;
-                var color = image.GetPixel(x, j);
 
-                if (!CompareColors(image.GetPixel(x, j), Color.Black))
-                {
-                    //To find one black pixel in a row
-                    for (int f = x; f < pict.Width; f++)
-                    {
-                        if (CompareColors(image.GetPixel(f, j), Color.Black))
-                        {
-                            x = f;
-                            break;
-                        }
-                    }
-                }
+                Find_Start_End_Pixel_On_A_Line(x, j, ref iFirst, ref iEnd);
 
-                if (CompareColors(image.GetPixel(x, j), Color.Black))
-                {
-                    //Find first black pixel in a row
-                    for (int b = x; b >= 0; b--)
-                    {
-                        if (CompareColors(image.GetPixel(b, j), Color.Black))
-                        {
-                            iFirst = b;
-                        } else
-                        {
-                            break;
-                        }
-                    }
-
-                    //Find last black pixel in a row
-                    for (int e = x; e < pict.Width; e++)
-                    {
-                        if (CompareColors(image.GetPixel(e, j), Color.Black))
-                        {
-                            iEnd = e;
-                        }
-                        else
-                        {
-                            //Five star shape, to be completed
-                            //for (int f = e; f < pict.Width; f++)
-                            //{
-                            //    if (CompareColors(image.GetPixel(f, j), Color.Black))
-                            //    {
-                            //        e = f;
-                            //    }
-                            //}
-                            break;
-                        }
-                    }
-                }
-
+                //Start from 2nd line
                 if (j > y)
                 {
                     //To check previous row has one red pixel
-                    bool prevRowHasRedPixel = false;
-                    for (int i = iFirst; i <= iEnd; i++)
-                    {
-                        if (j > 0 && CompareColors(image.GetPixel(i, j - 1), Color.Red))
-                        {
-                            prevRowHasRedPixel = true;
-                            break;
-                        }
-                    }
+                    bool prevRowHasRedPixel = Previous_Row_Has_Any_Red_Pixel(j, iFirst, iEnd);
 
                     //Previous row does not have any red pixel, return.
                     if (!prevRowHasRedPixel)
                     {
-                        j = pict.Height;
-                        break;
+                        return SizeOfShape;
                     }
-
                 }
 
-                for (int i = iFirst; i <= iEnd; i++)
-                {
-                    //To count black pixel, then set it to red
-                    if (CompareColors(image.GetPixel(i, j), Color.Black))
-                    {
-                        size++;
-                        image.SetPixel(i, j, Color.Red);
-                    }
-                    //End when it is while pixel
-                    else if (CompareColors(image.GetPixel(i, j), Color.White))
-                    {
-                        bool bContinue = false;
-                        //Find next black for shape like five star, to be completed
-                        //for (int k = i+1; k < pict.Width; k++)
-                        //{
-                        //    if (CompareColors(image.GetPixel(k, j), Color.Black))
-                        //    {
-                        //        i = k - 1;
-                        //        bContinue = true;
-                        //        break;
-                        //    }else 
-                        //    if (CompareColors(image.GetPixel(k, j), Color.Black))
-                        //    {
-                        //        bContinue = false;
-                        //        break;
-                        //    }
-                        //}
-
-                        if (bContinue)
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-
-                }
-
-                //End of Row
+                Count_Pixels_On_A_Line_Change_It_To_Red(j, iFirst, iEnd);
             }
-            return size; 
+
+            return SizeOfShape; 
        
         }
 
