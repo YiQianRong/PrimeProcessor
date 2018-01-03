@@ -7,8 +7,8 @@
     <ProjectGuid>{A94DB827-A5D5-4F1A-84B5-58E2570C8169}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SharpBank</RootNamespace>
-    <AssemblyName>SharpBank</AssemblyName>
+    <RootNamespace>Processor</RootNamespace>
+    <AssemblyName>Processor</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -18,9 +18,10 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -39,12 +40,15 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HashTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PrimeProcessor.cs" />
+    <Compile Include="ShapeProcessor.cs" />
     <Compile Include="Stack.cs" />
+    <Compile Include="StringsProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

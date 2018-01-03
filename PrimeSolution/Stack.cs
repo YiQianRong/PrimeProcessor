@@ -2,6 +2,13 @@
 
 namespace Stack
 {
+    //2) Create your own class or a set of functions that implement a stack.
+    //   Include the following four methods:
+    //    a.Push: Adds a data element to the top of the stack
+    //    b.Pop: Removes a data element from the top of the stack
+    //    c.Size: Returns the total number of elements in the stack
+    //    d.isEmpty: Returns true if the stack is empty.
+
     public class Node<T>
     {
         public Node(T i)
