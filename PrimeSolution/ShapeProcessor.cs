@@ -29,26 +29,26 @@ namespace Processor
             image.Save(path);
         }
 
-        //The size of a shap is the number of pixels in a shap
-        //To find out the maximum size of shap in a bitmap - Shape0.bmp
+        //The size of a shape is the number of pixels in a shape
+        //To find out the maximum size of shape in a bitmap - Shape0.bmp
         public int GetMaxSizeOfShape()
         {
             var sizeList = new MicrosoftResearch.Infer.Collections.SortedSet<int>();
             int size = 0;
 
             var pict = image.Size;
-            int shapNumber = 1;
+            int shapeNumber = 1;
             for(int j = 0; j< pict.Height; j++)
             {
                 for(int i = 0; i< pict.Width; i++)
                 {
-                    int currShapSize = FindShapSize(i, j);
+                    int currShapeSize = FindShapeSize(i, j);
 
-                    if(currShapSize > 0 && !sizeList.Contains(currShapSize))
+                    if(currShapeSize > 0 && !sizeList.Contains(currShapeSize))
                     {
-                        sizeList.Add(currShapSize);
-                        string filename = String.Format("Shap_{0}_{1}.bmp", shapNumber, currShapSize);
-                        shapNumber++;
+                        sizeList.Add(currShapeSize);
+                        string filename = String.Format("Shape_{0}_{1}.bmp", shapeNumber, currShapeSize);
+                        shapeNumber++;
                         Save(filename);
                     }
                 }
@@ -66,7 +66,7 @@ namespace Processor
             return one.ToArgb().Equals(two.ToArgb());
         }
 
-        public int FindShapSize(int x, int y)
+        public int FindShapeSize(int x, int y)
         {
             //Return 0 this pattern
             //W current row
@@ -120,7 +120,7 @@ namespace Processor
                         }
                         else
                         {
-                            //Five star shap, to be completed
+                            //Five star shape, to be completed
                             //for (int f = e; f < pict.Width; f++)
                             //{
                             //    if (CompareColors(image.GetPixel(f, j), Color.Black))
@@ -167,7 +167,7 @@ namespace Processor
                     else if (CompareColors(image.GetPixel(i, j), Color.White))
                     {
                         bool bContinue = false;
-                        //Find next black for shap like five star, to be completed
+                        //Find next black for shape like five star, to be completed
                         //for (int k = i+1; k < pict.Width; k++)
                         //{
                         //    if (CompareColors(image.GetPixel(k, j), Color.Black))
