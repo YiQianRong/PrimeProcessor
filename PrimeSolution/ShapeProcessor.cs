@@ -11,6 +11,12 @@ using System.Drawing.Imaging;
 
 namespace Processor
 {
+    public class Line
+    {
+        public int FirstPixel { get; set; }
+        public int LastPixel { get; set; }
+    }
+
     public class ShapeProcessor
     {
         protected Bitmap image;
@@ -77,11 +83,11 @@ namespace Processor
             return one.ToArgb().Equals(two.ToArgb());
         }
 
-        protected bool Previous_Row_Has_Any_Red_Pixel(int j, int iFirst, int iEnd)
+        protected bool Previous_Row_Has_Any_Red_Pixel(int j, Line line)
         {
             //To check previous row has one red pixel
             bool prevRowHasRedPixel = false;
-            for (int i = iFirst; i <= iEnd; i++)
+            for (int i = line.FirstPixel; i <= line.LastPixel; i++)
             {
                 if (j > 0 && CompareColors(image.GetPixel(i, j - 1), Color.Red))
                 {
@@ -93,55 +99,71 @@ namespace Processor
             return prevRowHasRedPixel;
         }
 
-        protected void Find_Start_End_Pixel_On_A_Line(int x, int j, ref int iFirst, ref int iEnd)
+        protected List<Line> Find_Start_End_Pixel_On_Lines(int j)
         {
+            if (j == 132)
+            {
+                int ii = 0;
+            }
+
+            int x = 0;
+            var list = new List<Line>();
             var pict = image.Size;
-            if (!CompareColors(image.GetPixel(x, j), Color.Black))
+            //To find one black pixel in a row
+            for (int f = 0; f < pict.Width; f++)
             {
-                //To find one black pixel in a row
-                for (int f = x; f < pict.Width; f++)
+                if (CompareColors(image.GetPixel(f, j), Color.Black))
                 {
-                    if (CompareColors(image.GetPixel(f, j), Color.Black))
-                    {
-                        x = f;
-                        break;
-                    }
+                    x = f;
+                    break;
                 }
             }
 
-            if (CompareColors(image.GetPixel(x, j), Color.Black))
+            do
             {
-                //Find first black pixel in a row
-                for (int b = x; b >= 0; b--)
+                var line = new Line();
+                if (CompareColors(image.GetPixel(x, j), Color.Black))
                 {
-                    if (CompareColors(image.GetPixel(b, j), Color.Black))
+                    //Find first black pixel in a row
+                    for (int b = x; b >= 0; b--)
                     {
-                        iFirst = b;
+                        if (CompareColors(image.GetPixel(b, j), Color.Black))
+                        {
+                            line.FirstPixel = b;
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
-                    else
+
+                    //Find last black pixel in a row
+                    for (int e = x; e < pict.Width; e++)
                     {
-                        break;
+                        if (CompareColors(image.GetPixel(e, j), Color.Black))
+                        {
+                            line.LastPixel = e;
+                        }
+                        else
+                        {
+                            x = e - 1;
+                            break;
+                        }
                     }
+
+                    list.Add(line);
                 }
 
-                //Find last black pixel in a row
-                for (int e = x; e < pict.Width; e++)
-                {
-                    if (CompareColors(image.GetPixel(e, j), Color.Black))
-                    {
-                        iEnd = e;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
+                x++;
+            } while (x < pict.Width);
+
+
+            return list;
         }
 
-        protected void Count_Pixels_On_A_Line_Change_It_To_Red(int j, int iFirst, int iEnd)
+        protected void Count_Pixels_On_A_Line_Change_It_To_Red(int j, Line line)
         {
-            for (int i = iFirst; i <= iEnd; i++)
+            for (int i = line.FirstPixel; i <= line.LastPixel; i++)
             {
                 //To count black pixel, then set it to red
                 if (CompareColors(image.GetPixel(i, j), Color.Black))
@@ -171,25 +193,25 @@ namespace Processor
             var pict = image.Size;
             for (int j = y; j < pict.Height; j++)
             {
-                int iFirst = x;
-                int iEnd = x;
+                var lineList  = Find_Start_End_Pixel_On_Lines(j);
 
-                Find_Start_End_Pixel_On_A_Line(x, j, ref iFirst, ref iEnd);
-
-                //Start from 2nd line
-                if (j > y)
+                foreach (var line in lineList)
                 {
-                    //To check previous row has one red pixel
-                    bool prevRowHasRedPixel = Previous_Row_Has_Any_Red_Pixel(j, iFirst, iEnd);
-
-                    //Previous row does not have any red pixel, return.
-                    if (!prevRowHasRedPixel)
+                    //Start from 2nd line
+                    if (j > y)
                     {
-                        return SizeOfShape;
-                    }
-                }
+                        //To check previous row has one red pixel
+                        bool prevRowHasRedPixel = Previous_Row_Has_Any_Red_Pixel(j, line);
 
-                Count_Pixels_On_A_Line_Change_It_To_Red(j, iFirst, iEnd);
+                        //Previous row for this line does not have any red pixel, don't count, check next line.
+                        if (!prevRowHasRedPixel)
+                        {
+                            continue;
+                        }
+                    }
+
+                    Count_Pixels_On_A_Line_Change_It_To_Red(j, line);
+                }
             }
 
             return SizeOfShape; 
