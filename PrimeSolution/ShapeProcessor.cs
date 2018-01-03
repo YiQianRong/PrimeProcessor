@@ -44,7 +44,7 @@ namespace Processor
                     if(currShapSize > 0 && !sizeList.Contains(currShapSize))
                     {
                         sizeList.Add(currShapSize);
-                        Save();
+                        //Save();
                     }
                 }
             }
