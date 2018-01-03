@@ -44,7 +44,7 @@ namespace Processor
                     if(currShapSize > 0 && !sizeList.Contains(currShapSize))
                     {
                         sizeList.Add(currShapSize);
-                        //Save();
+                        Save();
                     }
                 }
             }
@@ -115,14 +115,14 @@ namespace Processor
                         }
                         else
                         {
-                            for (int f = e; f < pict.Width; f++)
-                            {
-                                var color1 = image.GetPixel(f, j);
-                                if (CompareColors(image.GetPixel(f, j), Color.Black))
-                                {
-                                    e = f;
-                                }
-                            }
+                            //Five star shap, to be completed
+                            //for (int f = e; f < pict.Width; f++)
+                            //{
+                            //    if (CompareColors(image.GetPixel(f, j), Color.Black))
+                            //    {
+                            //        e = f;
+                            //    }
+                            //}
                             break;
                         }
                     }
@@ -162,7 +162,7 @@ namespace Processor
                     else if (CompareColors(image.GetPixel(i, j), Color.White))
                     {
                         bool bContinue = false;
-                        //Find next black for shap like five star
+                        //Find next black for shap like five star, to be completed
                         //for (int k = i+1; k < pict.Width; k++)
                         //{
                         //    if (CompareColors(image.GetPixel(k, j), Color.Black))
