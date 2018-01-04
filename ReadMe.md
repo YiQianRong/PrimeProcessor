@@ -1,8 +1,9 @@
 
-www.codechef.com
-www.topcoder.com
-https://projecteuler.net/archives
-http://rosalind.info/problems/list-view/
+Problem listed in websites
+* www.codechef.com
+* www.topcoder.com
+* https://projecteuler.net/archives
+* http://rosalind.info/problems/list-view/
 
 Prerequisites
 --------
