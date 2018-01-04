@@ -59,7 +59,6 @@ namespace Processor
         protected string FileExt;
         protected int SizeOfShape;
         protected MicrosoftResearch.Infer.Collections.SortedSet<BlackPixel> BlackPixelList;
-            //new MicrosoftResearch.Infer.Collections.SortedSet<BlackPixel>(new SortedByBlackPixel());
 
         public ShapeProcessor(string filename, string fileExt)
         {
@@ -108,7 +107,9 @@ namespace Processor
         public int GetMaxSizeOfShape()
         {
             LoadImage();
+            //To store size of shapes
             var sizeList = new MicrosoftResearch.Infer.Collections.SortedSet<int>();
+            //To store black pixels on top of red lines
             BlackPixelList = new MicrosoftResearch.Infer.Collections.SortedSet<BlackPixel>(new SortedByBlackPixel());
 
             int size = 0;
@@ -223,7 +224,7 @@ namespace Processor
                 }
 
                 x++;
-            } while (x < pict.Width);
+            } while (x < pict.Width && j > y);
 
 
             return list;
@@ -233,12 +234,13 @@ namespace Processor
         {
             for (int i = line.FirstPixel; i <= line.LastPixel; i++)
             {
-                //To count black pixel, then set it to red
                 if (CompareColors(image.GetPixel(i, j), Color.Black))
                 {
+                    //To count black pixel, then set it to red
                     SizeOfShape++;
                     image.SetPixel(i, j, Color.Red);
 
+                    //To find out if a black pixel on top of red one, then store it to BlackPixelList
                     if (j > 0 && CompareColors(image.GetPixel(i, j - 1), Color.Black))
                     {
                         var cell = new BlackPixel(i, j - 1);
@@ -247,6 +249,7 @@ namespace Processor
 
                     if(BlackPixelList.Count > 0)
                     {
+                        //To find out if this pixel is in BlackPixelList, then remove it
                         var cell = new BlackPixel(i, j);
                         if (BlackPixelList.Contains(cell))
                         {
@@ -282,24 +285,25 @@ namespace Processor
                 }
             }
 
-            //To handle missing black area like V shape
+            //To count black area on top of red lines like V, W shape
             Count_Black_Area();
 
             return SizeOfShape; 
        
         }
 
+        //To count black area on top of red lines like V, W shape
         protected void Count_Black_Area()
         {
             while(BlackPixelList.Count > 0)
             {
                 var cell = BlackPixelList[0];
-                Line line = Find_Start_End_Pixel_On_Line(cell);
+                Line line = Find_Start_End_Pixel_On_A_Line(cell);
                 Count_Pixels_On_A_Line_Change_It_To_Red(cell.Y, line);
             }
         }
 
-        protected Line Find_Start_End_Pixel_On_Line(BlackPixel cell)
+        protected Line Find_Start_End_Pixel_On_A_Line(BlackPixel cell)
         {
             var pict = image.Size;
             var line = new Line();
