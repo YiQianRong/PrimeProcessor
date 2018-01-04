@@ -17,12 +17,49 @@ namespace Processor
         public int LastPixel { get; set; }
     }
 
+    public class BlackPixel : IComparer<BlackPixel>
+    {
+        public int X { get; set; }
+        public int Y { get; set; }
+
+        public BlackPixel(int i, int j)
+        {
+            X = i;
+            Y = j;
+        }
+
+        public int Compare(BlackPixel one, BlackPixel two)
+        {
+            int compareResult = 0;
+
+            compareResult = one.Y.CompareTo(two.Y);
+            if(compareResult == 0)
+            {
+                compareResult = one.X.CompareTo(two.X);
+            }
+
+            return compareResult;
+        }
+    }
+
+    // Defines a comparer to create a sorted set
+    // that is sorted by the BlackPixel
+    public class SortedByBlackPixel : IComparer<BlackPixel>
+    {
+        public int Compare(BlackPixel x, BlackPixel y)
+        {
+            return x.Compare(x, y);
+        }
+    }
+
     public class ShapeProcessor
     {
         protected Bitmap image;
         protected string FileName;
         protected string FileExt;
         protected int SizeOfShape;
+        protected MicrosoftResearch.Infer.Collections.SortedSet<BlackPixel> BlackPixelList;
+            //new MicrosoftResearch.Infer.Collections.SortedSet<BlackPixel>(new SortedByBlackPixel());
 
         public ShapeProcessor(string filename, string fileExt)
         {
@@ -72,8 +109,9 @@ namespace Processor
         {
             LoadImage();
             var sizeList = new MicrosoftResearch.Infer.Collections.SortedSet<int>();
-            int size = 0;
+            BlackPixelList = new MicrosoftResearch.Infer.Collections.SortedSet<BlackPixel>(new SortedByBlackPixel());
 
+            int size = 0;
             var pict = image.Size;
             int shapeNumber = 1;
             int i = 0;
@@ -148,6 +186,7 @@ namespace Processor
                         if (CompareColors(image.GetPixel(b, j), Color.Black))
                         {
                             line.FirstPixel = b;
+                            line.LastPixel = b;
                         }
                         else
                         {
@@ -199,6 +238,21 @@ namespace Processor
                 {
                     SizeOfShape++;
                     image.SetPixel(i, j, Color.Red);
+
+                    if (j > 0 && CompareColors(image.GetPixel(i, j - 1), Color.Black))
+                    {
+                        var cell = new BlackPixel(i, j - 1);
+                        BlackPixelList.Add(cell);
+                    }
+
+                    if(BlackPixelList.Count > 0)
+                    {
+                        var cell = new BlackPixel(i, j);
+                        if (BlackPixelList.Contains(cell))
+                        {
+                            BlackPixelList.Remove(cell);
+                        }
+                    }
                 }
                 //End when it is while pixel
                 else if (CompareColors(image.GetPixel(i, j), Color.White))
@@ -228,8 +282,57 @@ namespace Processor
                 }
             }
 
+            //To handle missing black area like V shape
+            Count_Black_Area();
+
             return SizeOfShape; 
        
+        }
+
+        protected void Count_Black_Area()
+        {
+            while(BlackPixelList.Count > 0)
+            {
+                var cell = BlackPixelList[0];
+                Line line = Find_Start_End_Pixel_On_Line(cell);
+                Count_Pixels_On_A_Line_Change_It_To_Red(cell.Y, line);
+            }
+        }
+
+        protected Line Find_Start_End_Pixel_On_Line(BlackPixel cell)
+        {
+            var pict = image.Size;
+            var line = new Line();
+            if (CompareColors(image.GetPixel(cell.X, cell.Y), Color.Black))
+            {
+                //Find first black pixel in a row
+                for (int b = cell.X; b >= 0; b--)
+                {
+                    if (CompareColors(image.GetPixel(b, cell.Y), Color.Black))
+                    {
+                        line.FirstPixel = b;
+                        line.LastPixel = b;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                //Find last black pixel in a row
+                for (int e = cell.X; e < pict.Width; e++)
+                {
+                    if (CompareColors(image.GetPixel(e, cell.Y), Color.Black))
+                    {
+                        line.LastPixel = e;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            return line;
         }
 
     }
