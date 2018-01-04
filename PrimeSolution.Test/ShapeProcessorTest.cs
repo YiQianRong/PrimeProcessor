@@ -22,6 +22,10 @@ namespace Processor.Test
             processor = new ShapeProcessor("Shape1", "bmp");
             size = processor.GetMaxSizeOfShape();
             Assert.AreEqual(size, 6544);
+
+            processor = new ShapeProcessor("Shape2", "bmp");
+            size = processor.GetMaxSizeOfShape();
+            Assert.AreEqual(size, 3702);
         }
     }
 }
