@@ -45,6 +45,27 @@ namespace Processor
             image.Save(path);
         }
 
+        protected bool Fine_A_Black_Pixel(ref int x, ref int y)
+        {
+            bool bFound = false;
+            var pict = image.Size;
+            for (int j = y; j < pict.Height; j++)
+            {
+                for (int i = 0; i < pict.Width; i++)
+                {
+                    if (CompareColors(image.GetPixel(i, j), Color.Black))
+                    {
+                        x = i;
+                        y = j;
+                        bFound = true;
+                        return bFound;
+                    }
+                }
+            }
+
+            return bFound;
+        }
+
         //The size of a shape is the number of pixels in a shape
         //To find out the maximum size of shape in a bitmap - Shape0.bmp
         public int GetMaxSizeOfShape()
@@ -55,13 +76,17 @@ namespace Processor
 
             var pict = image.Size;
             int shapeNumber = 1;
-            for(int j = 0; j< pict.Height; j++)
+            int i = 0;
+            int j = 0;
+            bool bFound = false;
+            do
             {
-                for(int i = 0; i< pict.Width; i++)
+                bFound = Fine_A_Black_Pixel(ref i, ref j);
+
+                if (bFound)
                 {
                     int currShapeSize = FindShapeSize(i, j);
-
-                    if(currShapeSize > 0 && !sizeList.Contains(currShapeSize))
+                    if (currShapeSize > 0 && !sizeList.Contains(currShapeSize))
                     {
                         sizeList.Add(currShapeSize);
                         string filename = String.Format("{0}_{1}_{2}.{3}", FileName, shapeNumber, currShapeSize, FileExt);
@@ -69,7 +94,8 @@ namespace Processor
                         Save(filename);
                     }
                 }
-            }
+
+            } while (bFound);
 
             if (sizeList.Count > 0)
             {
@@ -86,20 +112,17 @@ namespace Processor
         protected bool Previous_Row_Has_Any_Red_Pixel(int j, Line line)
         {
             //To check previous row has one red pixel
-            bool prevRowHasRedPixel = false;
             for (int i = line.FirstPixel; i <= line.LastPixel; i++)
             {
                 if (j > 0 && CompareColors(image.GetPixel(i, j - 1), Color.Red))
                 {
-                    prevRowHasRedPixel = true;
-                    break;
+                    return true;
                 }
             }
-
-            return prevRowHasRedPixel;
+            return false;
         }
 
-        protected List<Line> Find_Start_End_Pixel_On_Lines(int j)
+        protected List<Line> Find_Start_End_Pixel_On_Lines(int j, int y)
         {
             int x = 0;
             var list = new List<Line>();
@@ -146,7 +169,18 @@ namespace Processor
                         }
                     }
 
-                    list.Add(line);
+                    bool prevRowHasRedPixel = true;
+                    //Start from 2nd line
+                    if (j > y)
+                    {
+                        //To check previous row has one red pixel
+                        prevRowHasRedPixel = Previous_Row_Has_Any_Red_Pixel(j, line);
+                    }
+
+                    if (prevRowHasRedPixel)
+                    {
+                        list.Add(line);
+                    }
                 }
 
                 x++;
@@ -176,9 +210,7 @@ namespace Processor
 
         public int FindShapeSize(int x, int y)
         {
-            //Return 0 this pattern
-            //W current row
-            //R current row
+            //Return 0 this pattern when White or Red
             if (CompareColors(image.GetPixel(x, y), Color.White) || CompareColors(image.GetPixel(x, y), Color.Red))
             {
                 return 0;
@@ -188,23 +220,10 @@ namespace Processor
             var pict = image.Size;
             for (int j = y; j < pict.Height; j++)
             {
-                var lineList  = Find_Start_End_Pixel_On_Lines(j);
+                var lineList  = Find_Start_End_Pixel_On_Lines(j, y);
 
                 foreach (var line in lineList)
                 {
-                    //Start from 2nd line
-                    if (j > y)
-                    {
-                        //To check previous row has one red pixel
-                        bool prevRowHasRedPixel = Previous_Row_Has_Any_Red_Pixel(j, line);
-
-                        //Previous row for this line does not have any red pixel, don't count, check next line.
-                        if (!prevRowHasRedPixel)
-                        {
-                            continue;
-                        }
-                    }
-
                     Count_Pixels_On_A_Line_Change_It_To_Red(j, line);
                 }
             }
